@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Criptografia Clássica: Resolução</title>
+<style>
+@page { size: A4; margin: 20mm 20mm 18mm 20mm; }
+body { font-family: "Liberation Serif", "Times New Roman", serif; font-size: 12pt; line-height: 1.5; color: #000; }
+h1 { font-size: 16pt; text-align: center; margin: 0 0 4px; }
+.sub { text-align: center; font-size: 11pt; margin-bottom: 14px; }
+h2 { font-size: 13pt; margin: 20px 0 6px; break-after: avoid; }
+h2 .n { display: inline-block; width: 28px; }
+p { margin: 5px 0; text-align: justify; }
+.q { break-inside: auto; }
+.res { font-weight: bold; }
+.box { border: 1px solid #000; padding: 2px 8px; font-weight: bold; display: inline-block; }
+table.t { border-collapse: collapse; margin: 8px auto; font-size: 11.5pt; }
+table.t td, table.t th { border: 1px solid #000; padding: 3px 9px; text-align: center; }
+table.t th { background: #eee; }
+.bits { font-family: "Liberation Mono", monospace; font-size: 11pt; margin: 8px 0 8px 30px; line-height: 1.6; white-space: pre; }
+pre.code { font-family: "Liberation Mono", monospace; font-size: 9.5pt; border: 1px solid #999; background: #f6f6f6; padding: 8px 10px; line-height: 1.35; break-inside: avoid; }
+mjx-container[display="true"] { margin: 8px 0 !important; }
+.eq { margin: 6px 0 6px 30px; }
+.tab { font-size: 11pt; text-align: center; margin: 0 0 10px; }
+</style>
+</head>
+<body>
+
+<h1>Exercícios de Aprendizagem: Criptografia Clássica</h1>
+<div class="sub">Resolução</div>
+
+<p class="tab">Correspondência usada: A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9, K=10, L=11, M=12,
+N=13, O=14, P=15, Q=16, R=17, S=18, T=19, U=20, V=21, W=22, X=23, Y=24, Z=25</p>
+
+<!-- ============ 1 ============ -->
+<h2><span class="n">1)</span>Cifra de Hill: DOGS</h2>
+<p>$K=\begin{pmatrix}2&1\\25&4\end{pmatrix}$, módulo 26. Blocos: DO $=(3,14)$ e GS $=(6,18)$.</p>
+<p><b>Cifrar</b> ($C = K\cdot P \bmod 26$):</p>
+$$\begin{pmatrix}2&1\\25&4\end{pmatrix}\begin{pmatrix}3\\14\end{pmatrix}=\begin{pmatrix}2\cdot3+1\cdot14\\25\cdot3+4\cdot14\end{pmatrix}=\begin{pmatrix}20\\131\end{pmatrix}\equiv\begin{pmatrix}20\\1\end{pmatrix}\ \to\ \text{UB}$$
+$$\begin{pmatrix}2&1\\25&4\end{pmatrix}\begin{pmatrix}6\\18\end{pmatrix}=\begin{pmatrix}2\cdot6+1\cdot18\\25\cdot6+4\cdot18\end{pmatrix}=\begin{pmatrix}30\\222\end{pmatrix}\equiv\begin{pmatrix}4\\14\end{pmatrix}\ \to\ \text{EO}$$
+<p>Texto cifrado: <span class="box">UBEO</span></p>
+
+<p><b>Inversa de K:</b></p>
+<p class="eq">$\det K = 2\cdot4-1\cdot25=-17\equiv 9 \pmod{26}$</p>
+<p class="eq">$9^{-1}\bmod 26 = 3$, pois $9\cdot3=27\equiv1$</p>
+$$K^{-1}=\det(K)^{-1}\cdot\operatorname{adj}K = 3\begin{pmatrix}4&-1\\-25&2\end{pmatrix}=\begin{pmatrix}12&-3\\-75&6\end{pmatrix}\equiv\begin{pmatrix}12&23\\3&6\end{pmatrix}\pmod{26}$$
+<p><b>Decifrar</b> ($P = K^{-1}\cdot C \bmod 26$):</p>
+$$\begin{pmatrix}12&23\\3&6\end{pmatrix}\begin{pmatrix}20\\1\end{pmatrix}=\begin{pmatrix}263\\66\end{pmatrix}\equiv\begin{pmatrix}3\\14\end{pmatrix}\to\text{DO}\qquad
+\begin{pmatrix}12&23\\3&6\end{pmatrix}\begin{pmatrix}4\\14\end{pmatrix}=\begin{pmatrix}370\\96\end{pmatrix}\equiv\begin{pmatrix}6\\18\end{pmatrix}\to\text{GS}$$
+<p>Mensagem decifrada: <span class="box">DOGS</span></p>
+
+<!-- ============ 2 ============ -->
+<h2><span class="n">2)</span>Cifra de Hill: FLAMENGO</h2>
+$$K=\begin{pmatrix}0&1&0&1\\1&0&0&0\\0&1&1&0\\1&2&3&4\end{pmatrix}\pmod{26}$$
+<p>Blocos: FLAM $=(5,11,0,12)$ e ENGO $=(4,13,6,14)$.</p>
+<p><b>Cifrar:</b></p>
+$$K\begin{pmatrix}5\\11\\0\\12\end{pmatrix}=\begin{pmatrix}11+12\\5\\11+0\\5+22+0+48\end{pmatrix}=\begin{pmatrix}23\\5\\11\\75\end{pmatrix}\equiv\begin{pmatrix}23\\5\\11\\23\end{pmatrix}\to\text{XFLX}
+\qquad
+K\begin{pmatrix}4\\13\\6\\14\end{pmatrix}=\begin{pmatrix}13+14\\4\\13+6\\4+26+18+56\end{pmatrix}=\begin{pmatrix}27\\4\\19\\104\end{pmatrix}\equiv\begin{pmatrix}1\\4\\19\\0\end{pmatrix}\to\text{BETA}$$
+<p>Texto cifrado: <span class="box">XFLXBETA</span></p>
+
+<p><b>Inversa de K</b> por Gauss-Jordan (mod 26):</p>
+$$\left(\begin{array}{cccc|cccc}0&1&0&1&1&0&0&0\\1&0&0&0&0&1&0&0\\0&1&1&0&0&0&1&0\\1&2&3&4&0&0&0&1\end{array}\right)
+\xrightarrow{L_1\leftrightarrow L_2}
+\left(\begin{array}{cccc|cccc}1&0&0&0&0&1&0&0\\0&1&0&1&1&0&0&0\\0&1&1&0&0&0&1&0\\1&2&3&4&0&0&0&1\end{array}\right)$$
+$$\xrightarrow[L_4\,\leftarrow\,L_4-L_1-2L_2]{L_3\,\leftarrow\,L_3-L_2}
+\left(\begin{array}{cccc|cccc}1&0&0&0&0&1&0&0\\0&1&0&1&1&0&0&0\\0&0&1&-1&-1&0&1&0\\0&0&3&2&-2&-1&0&1\end{array}\right)
+\xrightarrow{L_4\,\leftarrow\,L_4-3L_3}
+\left(\begin{array}{cccc|cccc}1&0&0&0&0&1&0&0\\0&1&0&1&1&0&0&0\\0&0&1&-1&-1&0&1&0\\0&0&0&5&1&-1&-3&1\end{array}\right)$$
+<p class="eq">$5^{-1}\bmod 26=21$, pois $5\cdot21=105\equiv1$. Então $L_4\leftarrow 21\,L_4$:
+$\ (0\ 0\ 0\ 1 \mid 21\ \ {-21}\ \ {-63}\ \ 21)\equiv(0\ 0\ 0\ 1\mid 21\ \ 5\ \ 15\ \ 21)$</p>
+<p class="eq">$L_3\leftarrow L_3+L_4:\ (0\ 0\ 1\ 0\mid 20\ \ 5\ \ 16\ \ 21)$</p>
+<p class="eq">$L_2\leftarrow L_2-L_4:\ (0\ 1\ 0\ 0\mid {-20}\ \ {-5}\ \ {-15}\ \ {-21})\equiv(0\ 1\ 0\ 0\mid 6\ \ 21\ \ 11\ \ 5)$</p>
+$$K^{-1}\equiv\begin{pmatrix}0&1&0&0\\6&21&11&5\\20&5&16&21\\21&5&15&21\end{pmatrix}\pmod{26}$$
+<p><b>Decifrar:</b></p>
+$$K^{-1}\begin{pmatrix}23\\5\\11\\23\end{pmatrix}=\begin{pmatrix}5\\479\\1144\\1156\end{pmatrix}\equiv\begin{pmatrix}5\\11\\0\\12\end{pmatrix}\to\text{FLAM}
+\qquad
+K^{-1}\begin{pmatrix}1\\4\\19\\0\end{pmatrix}=\begin{pmatrix}4\\299\\344\\326\end{pmatrix}\equiv\begin{pmatrix}4\\13\\6\\14\end{pmatrix}\to\text{ENGO}$$
+<p>Mensagem decifrada: <span class="box">FLAMENGO</span></p>
+
+<!-- ============ 3 ============ -->
+<h2><span class="n">3)</span>Inversa de A em $\mathbb{Z}_5$</h2>
+$$A=\begin{pmatrix}3&1&2\\1&1&2\\0&1&3\end{pmatrix}$$
+<p class="eq">$\det A = 3(3-2)-1(3-0)+2(1-0)=3-3+2=2$</p>
+<p class="eq">$2^{-1}\bmod 5 = 3$, pois $2\cdot3=6\equiv1$</p>
+<p>Cofatores:</p>
+$$C_{11}=1,\ \ C_{12}=-3,\ \ C_{13}=1,\qquad C_{21}=-1,\ \ C_{22}=9,\ \ C_{23}=-3,\qquad C_{31}=0,\ \ C_{32}=-4,\ \ C_{33}=2$$
+$$\operatorname{adj}A=\begin{pmatrix}1&-1&0\\-3&9&-4\\1&-3&2\end{pmatrix}\equiv\begin{pmatrix}1&4&0\\2&4&1\\1&2&2\end{pmatrix}\pmod 5$$
+$$A^{-1}=3\cdot\operatorname{adj}A=\begin{pmatrix}3&12&0\\6&12&3\\3&6&6\end{pmatrix}\equiv\begin{pmatrix}3&2&0\\1&2&3\\3&1&1\end{pmatrix}\pmod 5$$
+
+<!-- ============ 4 ============ -->
+<h2><span class="n">4)</span>Cifra afim: OBTER</h2>
+<p>$e_k(x) = 3x+7 \bmod 26$</p>
+<table class="t">
+<tr><th>Letra</th><th>$x$</th><th>$3x+7$</th><th>mod 26</th><th>Cifra</th></tr>
+<tr><td>O</td><td>14</td><td>49</td><td>23</td><td>X</td></tr>
+<tr><td>B</td><td>1</td><td>10</td><td>10</td><td>K</td></tr>
+<tr><td>T</td><td>19</td><td>64</td><td>12</td><td>M</td></tr>
+<tr><td>E</td><td>4</td><td>19</td><td>19</td><td>T</td></tr>
+<tr><td>R</td><td>17</td><td>58</td><td>6</td><td>G</td></tr>
+</table>
+<p>Texto cifrado: <span class="box">XKMTG</span></p>
+<p><b>Função inversa:</b> $3^{-1}\bmod 26 = 9$, pois $3\cdot 9=27\equiv 1$.</p>
+$$d_k(y)=9\,(y-7)\bmod 26$$
+<table class="t">
+<tr><th>Cifra</th><th>$y$</th><th>$9(y-7)$</th><th>mod 26</th><th>Letra</th></tr>
+<tr><td>X</td><td>23</td><td>144</td><td>14</td><td>O</td></tr>
+<tr><td>K</td><td>10</td><td>27</td><td>1</td><td>B</td></tr>
+<tr><td>M</td><td>12</td><td>45</td><td>19</td><td>T</td></tr>
+<tr><td>T</td><td>19</td><td>108</td><td>4</td><td>E</td></tr>
+<tr><td>G</td><td>6</td><td>$-9$</td><td>17</td><td>R</td></tr>
+</table>
+<p>Mensagem decifrada: <span class="box">OBTER</span></p>
+
+<!-- ============ 5 ============ -->
+<h2><span class="n">5)</span>Quebra da cifra afim</h2>
+<p>Em inglês, as letras mais frequentes são E $(4)$ e T $(19)$. Logo, E $\to$ B $(1)$ e T $\to$ U $(20)$:</p>
+$$\begin{cases}4a+b\equiv 1 \pmod{26}\\ 19a+b\equiv 20 \pmod{26}\end{cases}$$
+<p class="eq">Subtraindo: $15a\equiv 19 \pmod{26}$. Como $15^{-1}\bmod 26=7$ (pois $15\cdot7=105\equiv1$):</p>
+$$a\equiv 19\cdot 7=133\equiv 3 \qquad b\equiv 1-4\cdot3=-11\equiv 15$$
+<p class="eq">$\operatorname{mdc}(3,26)=1$, então a chave é válida.</p>
+$$e(x)=3x+15 \bmod 26 \qquad\qquad d(y)=9\,(y-15)\bmod 26$$
+
+<!-- ============ 6 ============ -->
+<h2><span class="n">6)</span>Cifra de bloco × cifra de fluxo</h2>
+<p>A <b>cifra de bloco</b> divide a mensagem em blocos de tamanho fixo e cifra cada bloco inteiro de uma vez, com a mesma chave (ex.: Hill, DES, AES).</p>
+<p>A <b>cifra de fluxo</b> cifra a mensagem bit a bit (ou caractere a caractere), combinando cada símbolo com uma sequência de chave que muda a cada posição (ex.: LFSR, RC4, auto chave). Em geral é mais rápida e simples de implementar em hardware.</p>
+
+<!-- ============ 7 ============ -->
+<h2><span class="n">7)</span>LFSR: vetor de inicialização $(0,1,1,1)$</h2>
+<p>Pelo diagrama, a saída é $k_1$, a realimentação é $k_1\oplus k_2$ (que entra em $k_4$) e o deslocamento é $k_1\leftarrow k_2\leftarrow k_3\leftarrow k_4$.</p>
+<table class="t">
+<tr><th>clock</th><th>$k_1$</th><th>$k_2$</th><th>$k_3$</th><th>$k_4$</th><th>saída</th><th>$k_1\oplus k_2$</th></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>3</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>4</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>5</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>6</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>7</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>8</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>9</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>10</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>11</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>12</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>13</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>14</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>15</td><td>0</td><td>1</td><td>1</td><td>1</td><td colspan="2">volta ao início</td></tr>
+</table>
+<p>O período é $15 = 2^4-1$ (período máximo). A chave de fluxo é:</p>
+$$k_0k_1k_2\ldots = 011110001001101\ \ 011110001\ldots$$
+<p>A mensagem $m = \text{DF0E01}_h$ tem 24 bits. Cifrando com $E(x_i)=x_i+k_i \bmod 2$ (XOR):</p>
+<div class="bits">m = 1101 1111 0000 1110 0000 0001
+k = 0111 1000 1001 1010 1111 0001
+    ----------------------------- ⊕
+c = 1010 0111 1001 0100 1111 0000</div>
+<p>Texto cifrado: <span class="box">c = A794F0<sub>h</sub></span></p>
+
+<!-- ============ 8 ============ -->
+<h2><span class="n">8)</span>Auto chave: M = ENCRYPTION, K = 20</h2>
+<p>A chave de fluxo começa com a semente e depois usa a letra anterior do texto claro: $k_0=20$ e $k_i=m_{i-1}$.</p>
+<p><b>Cifrar:</b> $y_i = m_i + k_i \bmod 26$</p>
+<table class="t">
+<tr><th>$i$</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+<tr><th>M</th><td>E</td><td>N</td><td>C</td><td>R</td><td>Y</td><td>P</td><td>T</td><td>I</td><td>O</td><td>N</td></tr>
+<tr><th>$m_i$</th><td>4</td><td>13</td><td>2</td><td>17</td><td>24</td><td>15</td><td>19</td><td>8</td><td>14</td><td>13</td></tr>
+<tr><th>$k_i$</th><td>20</td><td>4</td><td>13</td><td>2</td><td>17</td><td>24</td><td>15</td><td>19</td><td>8</td><td>14</td></tr>
+<tr><th>$m_i+k_i$</th><td>24</td><td>17</td><td>15</td><td>19</td><td>41</td><td>39</td><td>34</td><td>27</td><td>22</td><td>27</td></tr>
+<tr><th>$y_i$</th><td>24</td><td>17</td><td>15</td><td>19</td><td>15</td><td>13</td><td>8</td><td>1</td><td>22</td><td>1</td></tr>
+<tr><th>C</th><td>Y</td><td>R</td><td>P</td><td>T</td><td>P</td><td>N</td><td>I</td><td>B</td><td>W</td><td>B</td></tr>
+</table>
+<p>Chave de fluxo: $20,\ 4,\ 13,\ 2,\ 17,\ 24,\ 15,\ 19,\ 8,\ 14$</p>
+<p>Texto cifrado: <span class="box">YRPTPNIBWB</span></p>
+<p><b>Decifrar:</b> $m_i = y_i - k_i \bmod 26$. Cada letra decifrada é a chave da próxima.</p>
+<table class="t">
+<tr><th>$y_i$</th><td>24</td><td>17</td><td>15</td><td>19</td><td>15</td><td>13</td><td>8</td><td>1</td><td>22</td><td>1</td></tr>
+<tr><th>$k_i$</th><td>20</td><td>4</td><td>13</td><td>2</td><td>17</td><td>24</td><td>15</td><td>19</td><td>8</td><td>14</td></tr>
+<tr><th>$y_i-k_i$</th><td>4</td><td>13</td><td>2</td><td>17</td><td>$-2$</td><td>$-11$</td><td>$-7$</td><td>$-18$</td><td>14</td><td>$-13$</td></tr>
+<tr><th>$m_i$</th><td>4</td><td>13</td><td>2</td><td>17</td><td>24</td><td>15</td><td>19</td><td>8</td><td>14</td><td>13</td></tr>
+<tr><th>M</th><td>E</td><td>N</td><td>C</td><td>R</td><td>Y</td><td>P</td><td>T</td><td>I</td><td>O</td><td>N</td></tr>
+</table>
+<p>Mensagem decifrada: <span class="box">ENCRYPTION</span></p>
+
+<!-- ============ 9 ============ -->
+<h2><span class="n">9)</span>Cifra polialfabética × monoalfabética</h2>
+<p>A <b>monoalfabética</b> usa um único alfabeto de substituição, então cada letra do texto claro vira sempre a mesma letra cifrada (ex.: César, afim). Ela mantém a frequência das letras do idioma e pode ser quebrada por análise de frequência.</p>
+<p>A <b>polialfabética</b> usa vários alfabetos de substituição, então a mesma letra pode virar letras diferentes, dependendo da posição ou da chave (ex.: Vigenère, auto chave). Ela disfarça as frequências e é mais difícil de quebrar.</p>
+
+<!-- ============ 10 ============ -->
+<h2><span class="n">10)</span>Valores de $a$ não permitidos em $E(x)=ax+b \bmod 47$</h2>
+<p>Para a função ter inversa, é preciso que $\operatorname{mdc}(a,47)=1$. Como 47 é primo, isso vale para qualquer $a$ que não seja múltiplo de 47.</p>
+<p>Portanto, o único valor não permitido é <span class="box">$a\equiv 0 \pmod{47}$</span>. Os valores $a=1,2,\ldots,46$ são todos permitidos.</p>
+
+<!-- ============ 11 ============ -->
+<h2><span class="n">11)</span>Criptografia ou esteganografia?</h2>
+<p>O exemplo usa as duas técnicas. Codificar as mensagens com uma chave que o agente conhece é <b>criptografia</b>, porque esconde o <i>conteúdo</i> da mensagem. Esconder a mensagem verdadeira numa cápsula sob a pele é <b>esteganografia</b>, porque esconde a <i>existência</i> da mensagem. A mensagem falsa serve para enganar quem interceptar o portador.</p>
+
+<!-- ============ 12 ============ -->
+<h2><span class="n">12)</span>Cifra de César com chave 11</h2>
+<p>Decifragem: $x = y - 11 \bmod 26$</p>
+<table class="t">
+<tr><th>Cifra</th><td>H</td><td>P</td><td>H</td><td>T</td><td>W</td><td>W</td><td>X</td><td>P</td><td>P</td><td>E</td><td>L</td><td>E</td><td>X</td><td>T</td><td>O</td><td>Y</td><td>T</td><td>R</td><td>S</td><td>E</td></tr>
+<tr><th>$y$</th><td>7</td><td>15</td><td>7</td><td>19</td><td>22</td><td>22</td><td>23</td><td>15</td><td>15</td><td>4</td><td>11</td><td>4</td><td>23</td><td>19</td><td>14</td><td>24</td><td>19</td><td>17</td><td>18</td><td>4</td></tr>
+<tr><th>$x$</th><td>22</td><td>4</td><td>22</td><td>8</td><td>11</td><td>11</td><td>12</td><td>4</td><td>4</td><td>19</td><td>0</td><td>19</td><td>12</td><td>8</td><td>3</td><td>13</td><td>8</td><td>6</td><td>7</td><td>19</td></tr>
+<tr><th>Claro</th><td>W</td><td>E</td><td>W</td><td>I</td><td>L</td><td>L</td><td>M</td><td>E</td><td>E</td><td>T</td><td>A</td><td>T</td><td>M</td><td>I</td><td>D</td><td>N</td><td>I</td><td>G</td><td>H</td><td>T</td></tr>
+</table>
+<p>Mensagem: <span class="box">WE WILL MEET AT MIDNIGHT</span> (“Nós nos encontraremos à meia-noite”)</p>
+
+<!-- ============ 13 ============ -->
+<h2><span class="n">13)</span>Implementação da cifra afim (Python)</h2>
+<pre class="code">def cifrar(msg, a, b):
+    return ''.join(chr((a*(ord(c)-65) + b) % 26 + 65) for c in msg)
+
+def decifrar(cif, a, b):
+    ai = pow(a, -1, 26)          # inverso de a mod 26
+    return ''.join(chr(ai*(ord(c)-65-b) % 26 + 65) for c in cif)
+
+print(cifrar("OBTER", 3, 7))     # XKMTG
+print(decifrar("XKMTG", 3, 7))   # OBTER</pre>
+
+<!-- ============ 14 ============ -->
+<h2><span class="n">14)</span>Implementação da cifra de Hill (Python)</h2>
+<pre class="code">from sympy import Matrix
+
+def hill(K, txt):
+    n = K.shape[0]
+    v = [ord(c)-65 for c in txt]
+    out = []
+    for i in range(0, len(v), n):
+        out += [x % 26 for x in K * Matrix(v[i:i+n])]
+    return ''.join(chr(x+65) for x in out)
+
+K = Matrix([[2, 1], [25, 4]])
+c = hill(K, "DOGS")                # UBEO
+print(c, hill(K.inv_mod(26), c))   # DOGS</pre>
+
+<!-- ============ 15 ============ -->
+<h2><span class="n">15)</span>Implementação da cifra de fluxo auto chave (Python)</h2>
+<pre class="code">def cifrar(msg, k):
+    out = ''
+    for c in msg:
+        m = ord(c) - 65
+        out += chr((m + k) % 26 + 65)
+        k = m                      # próxima chave = letra atual do texto claro
+    return out
+
+def decifrar(cif, k):
+    out = ''
+    for c in cif:
+        m = (ord(c) - 65 - k) % 26
+        out += chr(m + 65)
+        k = m
+    return out
+
+print(cifrar("ENCRYPTION", 20))     # YRPTPNIBWB
+print(decifrar("YRPTPNIBWB", 20))   # ENCRYPTION</pre>
+
+</body>
+</html>
